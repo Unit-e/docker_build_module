@@ -13,8 +13,11 @@ IF(!$docker_run_interactive_args) {
 # set any other params you like here from the commandline (by default nothing)
 IF(!$docker_run_extra_args) {
     $docker_run_extra_args = ''
-} else {
+}
 
+# set any other params you like here from the commandline (by default nothing)
+IF(!$container_mount_path) {
+    $container_mount_path = '/home/build/src'
 }
 
 $container_ref="${container_name}:${container_branch}"
@@ -22,10 +25,11 @@ $container_ref="${container_name}:${container_branch}"
 # deal with filenames with spaces in them [woof]
 $PWD_escaped=${PWD} -replace ' ', '` '
 
-$volume_mount="-v ${PWD_escaped}:/home/build/src"
+$volume_mount="-v ${PWD_escaped}:${container_mount_path}"
+$working_dir="-w ${container_mount_path}"
 
 $container_user_args=""     # "--user build"
-$docker_args = "--rm ${container_user_args} ${docker_run_interactive_args} ${$docker_run_extra_args} ${volume_mount}"
+$docker_args = "--rm ${container_user_args} ${docker_run_interactive_args} ${docker_run_extra_args} ${volume_mount} ${working_dir}"
 
 # create these for use in calling scripts
 $final_cmd = "docker run ${docker_args} ${container_ref} /bin/bash -c `"${container_command}`""
