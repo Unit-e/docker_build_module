@@ -22,8 +22,14 @@ IF(!$container_mount_path) {
 
 $container_ref="${container_name}:${container_branch}"
 
+# if running this command FROM powershell in a directory that starts with \\wsl$\, we get a weird
+# path output prepended with due to Powershell's pipline binding stuff.  remove it.
+# example path input: "Microsoft.PowerShell.Core\FileSystem::\\wsl$\Ubuntu-20.04\path\to\repo"
+# this command gives us back: "\\wsl$\Ubuntu-20.04\path\to\repo"
+$converted_pwd = Convert-Path -Path $pwd
+
 # deal with filenames with spaces in them [woof]
-$PWD_escaped=${PWD} -replace ' ', '` '
+$PWD_escaped=${converted_pwd} -replace ' ', '` '
 
 $volume_mount="-v ${PWD_escaped}:${container_mount_path}"
 $working_dir="-w ${container_mount_path}"
