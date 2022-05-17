@@ -45,3 +45,47 @@ To run in CI systems, specify DOCKER_INTERACTIVE_ARGS="-t" to disable interactiv
 ```
 ./docker-run.ps1 DOCKER_INTERACTIVE_ARGS="-t" make all
 ```
+
+
+# Examples for Espressif hardware
+
+You can use this to target any kind of container for builds, but, it was originally built for building via Espressif-based containers 
+
+# ESP32
+
+place the following in your docker-build/docker-project-build-settings.ps1 for ESP-IDF builds (like for ESP32 chips)
+
+```
+$container_name="espressif/idf"
+$container_branch="release-v4.3"
+$container_mount_path = '/project'
+```
+
+Then you can build like this:
+```
+# do this once or as needed
+./docker-pull.ps1
+
+# run "make all" in the container
+./docker-run.ps1 idf.py build
+```
+
+If you're on linux, you CAN use the USB subsytem to do idf.py flash or idf.py monitor, but, on WSL2 (like what Docker Desktop uses), these commands won't work under default Windows 10 settings (USB passthrough to docker containers doesn't work). Win11 is adding support for this though.  Until then you still have to flash outside of the container on Win10 + Docker Desktop. Bummer.
+
+## Esp8266
+
+for esp8266-based builds using CNlohr's version of esp-open-sdk place the following in your docker-build/docker-project-build-settings.ps1 for ESP-IDF builds (like for ESP32 chips)
+
+```
+$container_name="ghcr.io/unit-e/esp-open-sdk-docker"
+$container_branch="cnlohr-use-esp82xx-prebuilt"
+```
+
+Then you can build like this:
+```
+# do this once or as needed
+./docker-pull.ps1
+
+# run "make all" in the container
+./docker-run.ps1 make all
+```
