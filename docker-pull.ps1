@@ -10,5 +10,5 @@
 . docker-build/docker-project-build-settings.ps1
 . docker-build/docker_build_module/docker-global-build-settings.ps1
 
-Write-Output "pull command to execute:`n${pull_cmd}"
-Invoke-Expression ${pull_cmd}
+Write-Output "pull command to execute:`n${docker_pull_cmd}"
+Invoke-Expression ${docker_pull_cmd}

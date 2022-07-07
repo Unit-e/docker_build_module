@@ -14,8 +14,8 @@ There's probably better ways, but, this is for using Docker to run build toolcha
 # project-specific variables for use with building via docker container
 
 # change these for your particular project
-$container_name="some-docker-username"
-$container_branch="master" # or "latest"
+$image_name="some-docker-username"
+$image_tag="master" # or "latest"
 ```
 
 3. Make a copy of files in ```.\docker-build\docker_build_module\copy_into_client\*``` to your project root.
@@ -46,6 +46,18 @@ To run in CI systems, specify DOCKER_INTERACTIVE_ARGS="-t" to disable interactiv
 ./docker-run.ps1 DOCKER_INTERACTIVE_ARGS="-t" make all
 ```
 
+### Docker exec
+
+You can also run Docker exec commands if there is already a running container like this:
+```
+
+# in one terminal do this:
+./docker-run.ps1 bash
+
+# in another terminal, do this:
+./docker-exec.ps1 bash
+```
+
 
 # Examples for Espressif hardware
 
@@ -56,8 +68,8 @@ You can use this to target any kind of container for builds, but, it was origina
 place the following in your docker-build/docker-project-build-settings.ps1 for ESP-IDF builds (like for ESP32 chips)
 
 ```
-$container_name="espressif/idf"
-$container_branch="release-v4.3"
+$image_name="espressif/idf"
+$image_tag="release-v4.3"
 $container_mount_path = '/project'
 ```
 
@@ -70,15 +82,17 @@ Then you can build like this:
 ./docker-run.ps1 idf.py build
 ```
 
-If you're on linux, you CAN use the USB subsytem to do idf.py flash or idf.py monitor, but, on WSL2 (like what Docker Desktop uses), these commands won't work under default Windows 10 settings (USB passthrough to docker containers doesn't work). Win11 is adding support for this though.  Until then you still have to flash outside of the container on Win10 + Docker Desktop. Bummer.
+If you're on linux, you CAN use the USB subsystem to do idf.py flash or idf.py monitor, but, on WSL2 (like what Docker Desktop uses), these commands won't work under default Windows 10 settings (USB passthrough to docker containers doesn't work). Win11 is adding support for this though.  Until then you still have to flash outside of the container on Win10 + Docker Desktop. Bummer.
+
+This USB passthrough is supposed to work on Win11 out of the gate though.
 
 ## Esp8266
 
 for esp8266-based builds using CNlohr's version of esp-open-sdk place the following in your docker-build/docker-project-build-settings.ps1 for ESP-IDF builds (like for ESP32 chips)
 
 ```
-$container_name="ghcr.io/unit-e/esp-open-sdk-docker"
-$container_branch="cnlohr-use-esp82xx-prebuilt"
+$image_name="ghcr.io/unit-e/esp-open-sdk-docker"
+$image_tag="cnlohr-use-esp82xx-prebuilt"
 ```
 
 Then you can build like this:
