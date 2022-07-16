@@ -19,7 +19,7 @@ IF(!$docker_run_extra_args) {
     $docker_run_extra_args = ''
 }
 
-# set any other params you like here from the commandline (by default nothing)
+# the current working directory will be mounted in this dir in the container by default.
 IF(!$container_mount_path) {
     $container_mount_path = '/home/build/src'
 }
@@ -28,6 +28,7 @@ IF(!$image_name_and_tag) {
     $image_name_and_tag = "${image_name}:${image_tag}"
 }
 
+# ugh... OK. windows. powershell. sup.
 # if running this command FROM powershell in a directory that starts with \\wsl$\, we get a weird
 # path output prepended with due to Powershell's pipline binding stuff.  remove it.
 # example path input: "Microsoft.PowerShell.Core\FileSystem::\\wsl$\Ubuntu-20.04\path\to\repo"
