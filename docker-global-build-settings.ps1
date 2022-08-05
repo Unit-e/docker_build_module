@@ -3,6 +3,11 @@
 # global build settings for any project using docker to build
 # pass some variables pre-set in here to use this.
 
+# EXPECTED INPUTS:
+# we expect the following global (not env) vars to be set before this script is called:
+# $docker_cmd - a docker command like 'run' 'exec' or 'pull' etc.
+# $container_name
+
 # if these aren't set from the commandline, set some default values.
 # "-it" means interactive + TTY. good for running from the commandline, but will cause errors if run from CI.
 # make sure to set this to be empty or just 't' if built from CI (like github)
@@ -58,7 +63,11 @@ if (!$docker_exec_entrypoint_exe)
 $container_user_args=""     # example: "--user build"
 $docker_run_args = "${docker_rm_args} ${container_user_args} ${docker_run_interactive_args} ${container_name_args} ${docker_run_extra_args} ${volume_mount} ${working_dir}"
 
-# generate these variables. calling scripts can use them to execute stuff
-$docker_run_cmd = "docker run ${docker_run_args} ${image_name_and_tag} /bin/bash -c `"${container_command}`""
-$docker_exec_cmd = "docker exec $docker_run_interactive_args ${container_name} ${docker_exec_entrypoint_exe} ${container_command}"
-$docker_pull_cmd = "docker pull ${image_name_and_tag}"
+# generate the final command, caller should execute this
+$final_cmd_to_run = switch ( $docker_cmd )
+{
+    'run' { "docker run ${docker_run_args} ${image_name_and_tag} /bin/bash -c `"${container_command}`"" }
+    'exec' { "docker exec $docker_run_interactive_args ${container_name} ${docker_exec_entrypoint_exe} ${container_command}" }
+    'pull' { "docker pull ${image_name_and_tag}" }
+    default { '' }  # we don't support anything else yet, but feel free to add more stuff here
+}
