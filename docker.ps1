@@ -13,7 +13,7 @@ $docker_cmd,$container_command = $args -split ' ',2
 
 echo "$docker_cmd -> $container_command"
 
-If (!$container_command) {
+if (($docker_cmd -ne "pull") -and (!$container_command)) {
     $prog_name="./docker.ps1"
     Write-Host "usage:      ${prog_name} [run,exec,pull] <args>`n`n"
     Write-Host "example:    ${prog_name} 'run make clean && make all && ls /tmp'`n            ^ runs these commands inside the docker container,`n              current directory will be mounted inside of it."
